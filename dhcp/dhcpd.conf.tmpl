@@ -1,0 +1,18 @@
+default-lease-time 3600;
+max-lease-time 7200;
+
+{{range .Networks}}
+subnet {{.Network}} netmask 255.255.255.0 {
+    range {{.Min}} {{.Max}};
+    option subnet-mask 255.255.255.0;
+    option routers {{.Router}};
+}
+{{end}}
+
+{{range .StaticHosts}}
+host {{.Name}} {
+	hardware ethernet    {{.MacAddress}};
+	fixed-address        {{.Address}};
+	max-lease-time       84600;
+}
+{{end}}
