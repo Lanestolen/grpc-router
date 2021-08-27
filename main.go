@@ -2,7 +2,6 @@ package main
 
 import (
 	"net"
-	"os"
 	"strconv"
 
 	"github.com/lanestolen/grpc-router/config"
@@ -14,7 +13,6 @@ import (
 )
 
 func main() {
-	os.Setenv("CONFIG_PATH", "/home/lanestolen/.config/grpc-router/config.yml")
 	conf, err := config.ParseConfig()
 	if err != nil {
 		log.Fatal().Err(err).Msg("couldn't parse config")
