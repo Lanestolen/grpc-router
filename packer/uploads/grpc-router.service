@@ -1,0 +1,27 @@
+# this is an example service file for grpc-router-service
+
+[Unit]
+Description=gRPC routing
+ConditionPathExists=/home/jensmp
+After=network.target
+
+[Service]
+Type=simple
+Environment="CONFIG_PATH=/home/jensmp/.config/grpc-router/config.yml"
+User=root
+Group=sudo
+LimitNOFILE=1024
+
+Restart=on-failure
+RestartSec=10
+
+WorkingDirectory=/home/jensmp
+ExecStart=/home/jensmp/grpc-router/grpc-router
+
+# make sure log directory exists and owned by syslog
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=grpc-router
+
+[Install]
+WantedBy=multi-user.target

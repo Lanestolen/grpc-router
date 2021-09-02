@@ -1,0 +1,14 @@
+wireguard-dir: /etc/wireguard/
+service-config:
+  domain:
+    endpoint: localhost
+    port: 5353
+  tls:
+    enabled: false
+    certFile:
+    certKey:
+    caFile:
+    directory:
+  auth:
+    aKey: deneme
+    sKey: test
