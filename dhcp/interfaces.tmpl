@@ -1,0 +1,6 @@
+{{range .}}
+auto {{.Name}}
+iface {{.Name}} inet static
+address {{.Address}}
+netmask 255.255.255.0
+{{end}}

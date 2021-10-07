@@ -16,9 +16,17 @@ import (
 	"google.golang.org/grpc"
 )
 
+type Interface struct {
+	Name    string
+	Address string
+}
+
 var (
 	//go:embed dhcpd.conf.tmpl
 	dhcpTemplate embed.FS
+
+	//go:embed interfaces.tmpl
+	ifaceTemplate embed.FS
 )
 
 type dhcpServer struct {
@@ -96,6 +104,8 @@ func createIfaceConf(ifaces []string) error {
 func setupIfaces(o []*proto.Network) error {
 	var ifaces []string
 	var usedifaces []string
+	var interfaces []Interface
+
 	infs, err := net.Interfaces()
 	if err != nil {
 		return err
@@ -113,10 +123,31 @@ func setupIfaces(o []*proto.Network) error {
 		if err := netcontroller.Controller.IfConfig.SetIP(ifaces[i], fmt.Sprintf("%s/24", nets.Router)); err != nil {
 			return err
 		}
+		interfaces = append(interfaces, Interface{Name: ifaces[i], Address: nets.Router})
 		usedifaces = append(usedifaces, ifaces[i])
 	}
+	if err := createInterfaceFile(interfaces); err != nil {
+		return err
+	}
+
 	if err := createIfaceConf(usedifaces); err != nil {
 		return err
 	}
+	return nil
+}
+
+func createInterfaceFile(ifaces []Interface) error {
+	var tpl bytes.Buffer
+	tmpl, err := template.ParseFS(ifaceTemplate, "interfaces.tmpl")
+	if err != nil {
+		return err
+	}
+	tmpl.Execute(&tpl, ifaces)
+
+	if err := ioutil.WriteFile("/etc/network/interfaces", tpl.Bytes(), 0644); err != nil {
+		log.Error().Err(err).Msg("creating interface file")
+		return err
+	}
+
 	return nil
 }
