@@ -49,7 +49,7 @@
           "modifyvm",
           "{{.Name}}",
           "--memory",
-          "2048"
+          "1024"
         ],
         [
           "modifyvm",
@@ -71,6 +71,11 @@
     {
       "execute_command": "echo 'jensmp' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
       "script": "scripts/install_tools.sh",
+      "type": "shell"
+    },
+    {
+      "execute_command": "echo 'jensmp' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+      "script": "scripts/secure.sh",
       "type": "shell"
     },
     {
