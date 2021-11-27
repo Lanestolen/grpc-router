@@ -181,6 +181,16 @@ func upDown(nic, cmd string) (string, error) {
 	return "Interface " + nic + " is " + cmd, nil
 }
 
+func saveConfig(nic string) error {
+	command := wgQuickBin + " " + "save" + " " + nic
+	_, err := WireGuardCmd(command)
+	if err != nil {
+
+		return fmt.Errorf("failed to execute command: %s error: %v", command, err)
+	}
+	return nil
+}
+
 //wg genkey > privatekey
 func generatePrivateKey(privateKeyName string) (string, error) {
 	cmd := wgManageBin + " genkey"
