@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/lanestolen/grpc-router/config"
+	"github.com/lanestolen/grpc-router/netcontroller"
 	"github.com/lanestolen/grpc-router/wireguard/proto"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
@@ -58,6 +59,9 @@ func (w *wireguard) InitializeI(ctx context.Context, r *proto.IReq) (*proto.IRes
 		log.Error().Err(err).Str("interface", out).Msg("Problem in making the interface UP")
 		return &proto.IResp{Message: out}, fmt.Errorf("PROBLEM IN THE FUNCTION upDown -- %v", err)
 	}
+
+	netcontroller.Controller.Sysctl.Enable(r.IName)
+
 	log.Debug().Str("Address: ", r.Address).
 		Uint32("ListenPort: ", r.ListenPort).
 		Str("Ethernet I: ", r.Eth).
@@ -76,7 +80,9 @@ func (w *wireguard) AddPeer(ctx context.Context, r *proto.AddPReq) (*proto.AddPR
 		return &proto.AddPResp{Message: out}, err
 	}
 	log.Info().Msgf("Peer with public key: { %s } is added to interface: { %s } from allowed-ips: { %s }", r.PublicKey, r.Nic, r.AllowedIPs)
-
+	if err := saveConfig(r.Nic); err != nil {
+		return &proto.AddPResp{Message: "error"}, fmt.Errorf("problem saving config")
+	}
 	return &proto.AddPResp{Message: out}, nil
 }
 

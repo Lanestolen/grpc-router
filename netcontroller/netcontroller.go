@@ -20,6 +20,9 @@ type NetController struct {
 	// IfConfigServce is wrapping functionalities of `ifconfig` tool
 	IfConfig *IfConfigService
 
+	// Sysctl wraps the systemctl tool
+	Sysctl *SysService
+
 	// Used to enable root command
 	sudo bool
 
@@ -112,11 +115,17 @@ func New(options ...OptionFunc) *NetController {
 		c: c,
 	}
 
+	sysctl := &SysService{
+		c: c,
+	}
+
 	c.IPService = ip
 
 	c.IfConfig = ifconf
 
 	c.DHCP = dhcp
+	c.Sysctl = sysctl
+
 	return c
 }
 
