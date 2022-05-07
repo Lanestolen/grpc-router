@@ -65,6 +65,8 @@ func main() {
 		Min:     "10.10.11.6",
 		Max:     "10.10.11.255",
 		Network: "10.10.11.0",
+		DnsServer: "10.10.11.3",
+
 	}
 	Networks = append(Networks, &net)
 
