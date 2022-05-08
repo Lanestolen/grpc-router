@@ -15,9 +15,8 @@ host {{.Name}} {
 	hardware ethernet    {{.MacAddress}};
 	fixed-address        {{.Address}};
 	max-lease-time       84600;
-	option routers {{.Router}};
 	option domain-name-servers {{.DnsServer}};
-    option domain-name {{.Domain}};
+    option domain-name {{.DomainName}};
 
 }
 {{end}}
